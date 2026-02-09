@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Chat with Katrina</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Lora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f1eb;
+            background-image:
+                linear-gradient(rgba(200, 195, 188, 0.4) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200, 195, 188, 0.4) 1px, transparent 1px);
+            background-size: 24px 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Full-page app wrapper */
+        .app-wrapper {
+            width: 100%;
+            max-width: 700px;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            box-shadow: 0 0 60px rgba(0,0,0,0.15);
+        }
+
+        /* Header */
+        .chat-header {
+            background: linear-gradient(135deg, #233E32 0%, #2C2821 100%);
+            color: white;
+            padding: 24px 20px 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .chat-header h1 {
+            font-family: 'Alice', serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .chat-header p {
+            font-size: 13px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+        .resume-download {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .resume-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .resume-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Prompt cards section */
+        .prompt-section {
+            flex-shrink: 0;
+            padding: 16px 16px 12px;
+            background: #FCFBF8;
+            border-bottom: 1px solid #e8e4de;
+        }
+        .prompt-section-header {
+            font-size: 12px;
+            font-weight: 500;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .prompt-cards {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+        }
+        .prompt-card {
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-family: 'Lora', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #2C2821;
+            min-width: 160px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+        .prompt-card:nth-child(odd) { background: #C3EED6; }
+        .prompt-card:nth-child(even) { background: #F1F2DE; }
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .prompt-card:active {
+            transform: scale(0.97);
+        }
+        .prompt-cards::-webkit-scrollbar { height: 3px; }
+        .prompt-cards::-webkit-scrollbar-track { background: transparent; }
+        .prompt-cards::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        /* Desktop: wrap into grid */
+        @media (min-width: 601px) {
+            .prompt-cards {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                overflow-x: visible;
+                gap: 10px;
+            }
+            .prompt-card {
+                min-width: unset;
+                min-height: 70px;
+                display: flex;
+                align-items: center;
+            }
+            .prompt-card:last-child:nth-child(odd) {
+                grid-column: span 2;
+            }
+        }
+
+        /* Chat messages area */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.bot { justify-content: flex-start; }
+        .message.user { justify-content: flex-end; }
+        .message-content {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            position: relative;
+            padding-left: 50px;
+        }
+        .bot-avatar {
+            position: absolute;
+            left: -15px;
+            bottom: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            object-fit: cover;
+        }
+        .message.user .message-content {
+            background: linear-gradient(135deg, #233E32 0%, #2C2821 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Chat input */
+        .chat-input {
+            display: flex;
+            padding: 14px 16px;
+            background: white;
+            border-top: 1px solid #e8e4de;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1.5px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Lora', sans-serif;
+            outline: none;
+            background: #f8f9fa;
+            transition: border-color 0.2s;
+        }
+        .chat-input input:focus {
+            border-color: #233E32;
+            background: white;
+        }
+        .chat-input button {
+            padding: 12px 22px;
+            background: #233E32;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Lora', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .chat-input button:hover {
+            background: #2C2821;
+            transform: scale(1.03);
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 18px;
+        }
+        .typing-dots { display: flex; gap: 4px; }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Choice buttons for clarifying questions */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .choice-btn {
+            background: #233E32;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-family: 'Lora', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+        .choice-btn:hover {
+            background: #2C2821;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(35, 62, 50, 0.3);
+        }
+
+        /* Follow-up prompts */
+        .follow-up { margin-top: -10px; margin-bottom: 20px; }
+        .follow-up-content {
+            background: #f0fdf4 !important;
+            border-left: 3px solid #233E32;
+            font-style: italic;
+            color: #166534 !important;
+        }
+
+        /* Related topics */
+        .related-topics { margin-top: -10px; margin-bottom: 20px; }
+        .related-content { background: #fafafa !important; padding: 12px 18px; }
+        .related-container { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .related-label { font-size: 12px; color: #666; font-weight: 500; }
+        .related-btn {
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .related-btn:hover { background: #233E32; color: white; }
+
+        /* Session indicator */
+        .session-indicator {
+            text-align: center;
+            padding: 8px;
+            background: #f0fdf4;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #166534;
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 600px) {
+            .chat-header { padding: 18px 16px 16px; }
+            .chat-header h1 { font-size: 20px; }
+            .resume-btn { font-size: 11px; padding: 6px 12px; }
+            .prompt-section { padding: 12px 12px 10px; }
+            .prompt-card {
+                min-width: 150px;
+                padding: 12px 14px;
+                font-size: 12px;
+            }
+            .chat-messages { padding: 16px; }
+            .message-content { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <div class="chat-header">
+            <h1>Chat with Kat</h1>
+            <p>Ask me about my experience, projects, or what I do for fun!</p>
+            <div class="resume-download">
+                <a href="https://drive.google.com/file/d/1JGmj7lk8DNxcVkGraRFSJhL7cDDhqy87/view?usp=drive_link" target="_blank" class="resume-btn">Download Resume</a>
+                <a href="https://meet-katrina-h-qmrcr9t.gamma.site/" target="_blank" class="resume-btn">View Portfolio</a>
+                <a href="https://www.linkedin.com/in/katrinahoner/" target="_blank" class="resume-btn">Connect on LinkedIn</a>
+            </div>
+        </div>
+
+        <div class="prompt-section" id="promptSection">
+            <div class="prompt-section-header">Not sure what to ask? Try one of these</div>
+            <div class="prompt-cards">
+                <button class="prompt-card" onclick="sendQuickReply('Tell me about yourself')">Tell me about yourself</button>
+                <button class="prompt-card" onclick="sendQuickReply('What\'s your leadership style?')">What's your leadership style?</button>
+                <button class="prompt-card" onclick="sendQuickReply('Tell me about a major project you led')">A major project you led</button>
+                <button class="prompt-card" onclick="sendQuickReply('How do you handle failure?')">How do you handle failure?</button>
+                <button class="prompt-card" onclick="sendQuickReply('What experience do you have with AI?')">Your experience with AI</button>
+                <button class="prompt-card" onclick="sendQuickReply('Why should we hire you?')">Why should we hire you?</button>
+                <button class="prompt-card" onclick="sendQuickReply('How do you handle conflict?')">How do you handle conflict?</button>
+                <button class="prompt-card" onclick="sendQuickReply('What is your tech stack?')">Tech stack</button>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    <img src="https://dn721802.ca.archive.org/0/items/headshot-kh/Headshot_KH.JPG" alt="Katrina" class="bot-avatar">
+Hey there! I'm Katrina.
+
+I'm a strategic systems thinker with 12 years of experience translating executive priorities into organizational transformation and scalable systems that drive growth and operational excellence across tech, education, and SaaS sectors. I bring play to just enough process and thrive at the intersection of operations, creativity, and enablement.
+
+What would you like to know about me?</div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="responses.js"></script>
+    <script>
+        // Pending clarification state
+        let pendingClarification = null;
+
+        function addMessage(content, isBot = false, options = {}) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            if (isBot) {
+                const avatar = document.createElement('img');
+                avatar.src = 'https://dn721802.ca.archive.org/0/items/headshot-kh/Headshot_KH.JPG';
+                avatar.alt = 'Katrina';
+                avatar.className = 'bot-avatar';
+                contentDiv.appendChild(avatar);
+            }
+
+            // Process markdown-style formatting
+            let processedContent = content
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/• /g, '&bull; ');
+
+            contentDiv.innerHTML += processedContent;
+
+            // Add choice buttons INSIDE the same speech bubble
+            if (options.choices && options.choices.length > 0) {
+                contentDiv.innerHTML += `
+                    <div class="choices-container">
+                        ${options.choices.map(choice =>
+                            `<button class="choice-btn" onclick="handleChoiceClick('${choice.id}')">${choice.label}</button>`
+                        ).join('')}
+                    </div>
+                `;
+            }
+
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+
+            // Add follow-up prompt if provided
+            if (options.followUp) {
+                setTimeout(() => {
+                    const followUpDiv = document.createElement('div');
+                    followUpDiv.className = 'message bot follow-up';
+                    followUpDiv.innerHTML = `
+                        <div class="message-content follow-up-content">
+                            <img src="https://dn721802.ca.archive.org/0/items/headshot-kh/Headshot_KH.JPG" alt="Katrina" class="bot-avatar">
+                            ${options.followUp}
+                        </div>
+                    `;
+                    messagesDiv.appendChild(followUpDiv);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }, 500);
+            }
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = `
+                <div class="message-content typing-indicator">
+                    <img src="https://dn721802.ca.archive.org/0/items/headshot-kh/Headshot_KH.JPG" alt="Katrina" class="bot-avatar">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingDiv = document.getElementById('typing');
+            if (typingDiv) typingDiv.remove();
+        }
+
+        function handleChoiceClick(responseId) {
+            const response = getResponseById(responseId);
+            if (!response) return;
+
+            // Show user's choice as a message
+            addMessage(response.title, false);
+
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                deliverResponse(responseId);
+            }, 800 + Math.random() * 500);
+
+            pendingClarification = null;
+        }
+
+        function deliverResponse(responseId) {
+            const response = getResponseById(responseId);
+            if (!response) {
+                addMessage(getRandomFallback(), true);
+                return;
+            }
+
+            // Mark as discussed
+            markDiscussed(responseId);
+
+            // Build options for addMessage
+            const options = { followUp: response.followUp };
+
+            // If this response has follow-up choice buttons, include them
+            if (response.followUpOptions && response.followUpOptions.length > 0) {
+                options.choices = response.followUpOptions;
+            }
+
+            addMessage(response.response, true, options);
+        }
+
+        function processUserMessage(userMessage) {
+            // FIRST: Check if this is an affirmative response to a follow-up
+            if (isAffirmativeResponse(userMessage)) {
+                const followUpHandler = getFollowUpHandler();
+
+                if (followUpHandler.hasFollowUp) {
+                    if (followUpHandler.isSingle) {
+                        // Single follow-up response - deliver it directly
+                        deliverResponse(followUpHandler.responseId);
+                        return;
+                    } else {
+                        // Multiple options - show clarification with buttons
+                        addMessage("Which would you like to hear about?", true, {
+                            choices: followUpHandler.options
+                        });
+                        return;
+                    }
+                }
+                // No follow-up available, fall through to regular matching
+            }
+
+            // Find matches using the new matching system
+            const matches = findMatches(userMessage);
+
+            // Check if we need clarification (pass query for forced trigger check)
+            const clarification = checkForClarification(matches, userMessage);
+
+            if (clarification.needsClarification) {
+                // Store pending clarification and show choices
+                pendingClarification = clarification;
+                addMessage(clarification.question, true, {
+                    choices: clarification.options
+                });
+                return;
+            }
+
+            if (matches.length === 0) {
+                // No matches - return fallback
+                addMessage(getRandomFallback(), true);
+                return;
+            }
+
+            // Single clear match - deliver response
+            deliverResponse(matches[0].id);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (message === '') return;
+
+            addMessage(message, false);
+            input.value = '';
+
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                processUserMessage(message);
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function sendQuickReply(message) {
+            addMessage(message, false);
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                processUserMessage(message);
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        // Reset session on page load
+        window.addEventListener('load', () => {
+            resetSession();
+        });
+    </script>
+</body>
+</html>

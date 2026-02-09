@@ -46,7 +46,7 @@
         }
         .chat-header h1 {
             font-family: 'Alice', serif;
-            font-size: 22px;
+            font-size: 30px;
             font-weight: 700;
             margin-bottom: 4px;
         }
@@ -157,6 +157,26 @@
             overflow-y: auto;
             padding: 20px;
             background: #f8f9fa;
+            position: relative;
+        }
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Alice', serif;
+            font-size: 90px;
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.04);
+            line-height: 0.95;
+            letter-spacing: 6px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .chat-messages > *:not(.watermark) {
+            position: relative;
+            z-index: 1;
         }
         .message {
             margin-bottom: 16px;
@@ -358,7 +378,7 @@
         </div>
 
         <div class="prompt-section" id="promptSection">
-            <div class="prompt-section-header">Not sure what to ask? Try one of these</div>
+            <div class="prompt-section-header">Not sure what to ask? Try one of these ⤵️</div>
             <div class="prompt-cards">
                 <button class="prompt-card" onclick="sendQuickReply('Tell me about yourself')">Tell me about yourself</button>
                 <button class="prompt-card" onclick="sendQuickReply('What\'s your leadership style?')">What's your leadership style?</button>
@@ -372,6 +392,7 @@
         </div>
 
         <div class="chat-messages" id="chatMessages">
+            <div class="watermark" id="watermark"></div>
             <div class="message bot">
                 <div class="message-content">
                     <img src="https://dn721802.ca.archive.org/0/items/headshot-kh/Headshot_KH.JPG" alt="Katrina" class="bot-avatar">
@@ -385,7 +406,9 @@ What would you like to know about me?</div>
 
         <div class="chat-input">
             <input type="text" id="userInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
+            <button onclick="sendMessage()" aria-label="Send" style="padding: 12px; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </button>
         </div>
     </div>
 
@@ -393,6 +416,20 @@ What would you like to know about me?</div>
     <script>
         // Pending clarification state
         let pendingClarification = null;
+
+        function updateWatermark() {
+            const chatMessages = document.getElementById('chatMessages');
+            const watermark = document.getElementById('watermark');
+            const contentHeight = chatMessages.scrollHeight;
+            const lineHeight = 90 * 0.95;
+            const pairHeight = lineHeight * 2;
+            const repetitions = Math.ceil(contentHeight / pairHeight);
+            let html = '';
+            for (let i = 0; i < repetitions; i++) {
+                html += 'KAT<br>CHAT<br>';
+            }
+            watermark.innerHTML = html;
+        }
 
         function addMessage(content, isBot = false, options = {}) {
             const messagesDiv = document.getElementById('chatMessages');
@@ -449,6 +486,7 @@ What would you like to know about me?</div>
             }
 
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            updateWatermark();
         }
 
         function showTypingIndicator() {
@@ -593,6 +631,7 @@ What would you like to know about me?</div>
         // Reset session on page load
         window.addEventListener('load', () => {
             resetSession();
+            updateWatermark();
         });
     </script>
 </body>

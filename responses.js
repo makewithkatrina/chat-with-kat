@@ -555,7 +555,13 @@ I'm someone who will send you a Loom instead of scheduling another meeting, shar
       companies: [],
       keywords: ["leadership style", "management style", "how do you lead", "lead a team", "managing people", "your style"],
       relatedTopics: ["conflict-handling", "stanford-transformation"],
-      response: `I lead with empathy, which, for me, means leading with humility. I can share wisdom without needing to be the "smartest person in the room." Everyone can agree that we're all human with our own struggles and personalities. However, that's easy to remember in calm moments, but harder to practice under pressure. When leading with and without authority, I believe you can always find harmony with people you may not see eye-to-eye with. Leading with empathy helps me cultivate working relationships, understand others' perspectives, and figure out how to bring out the best in others and myself.`,
+      response: `I lead with empathy, which, for me, means leading with humility. I can share wisdom without needing to be the "smartest person in the room."
+
+Everyone can agree that we're all human with our own struggles and personalities. However, that's easy to remember in calm moments, but harder to practice under pressure.
+
+When leading with and without authority, I believe you can always find harmony with people you may not see eye-to-eye with.
+
+Leading with empathy helps me cultivate working relationships, understand others' perspectives, and figure out how to bring out the best in others and myself.`,
     },
 
     // ============================================

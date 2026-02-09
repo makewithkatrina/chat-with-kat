@@ -650,7 +650,7 @@ When I laid out the pros and cons this way, the team agreed. While I was happy w
   fallbacks: [
     "That's a great question! I don't have a pre-written answer for that specific topic, but I'd love to discuss it further. Feel free to email me at makewithkatrina@gmail.com or connect on LinkedIn, and I'm happy to dive deeper!",
     "Hmm, I don't have that exact info programmed in, but that's exactly the kind of question I'd love to explore in a real conversation!",
-    "Great question! While I might not have that specific response ready, you can reach me at makewithkatrina@gmail.com or connect on LinkedIn (linkedin.com/in/katrinahoner). In the meantime, ask me about my transformation projects, automation skills, or why I'm excited about Zapier!"
+    "Great question! While I might not have that specific response ready, you can reach me at makewithkatrina@gmail.com or connect on <a href=\"https://www.linkedin.com/in/katrinahoner/\" target=\"_blank\" style=\"color: #233E32; text-decoration: underline;\">LinkedIn</a>."
   ]
 };
 

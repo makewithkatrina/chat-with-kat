@@ -70,11 +70,23 @@ const chatbotData = {
       responseIds: ["proud-professional", "proud-personal"],
       forceTriggers: ["what are you proud", "proudest", "most proud", "best work", "your accomplishment", "your achievement", "biggest accomplishment"]
     },
+    talent: {
+      label: "Talent",
+      clarifyingQuestion: "Great question! Are you asking about my professional strengths and skills, or my hidden talents?",
+      responseIds: ["strengths", "sing"],
+      forceTriggers: ["talent", "your talent", "talented"]
+    },
+    boundary: {
+      label: "Boundary Check",
+      clarifyingQuestion: "I want to make sure I understand your question! Were you asking about my personal information (age, address, etc.)?",
+      responseIds: ["boundary-personal", "boundary-other"],
+      forceTriggers: ["age", "address", "home", "money", "married"]
+    },
     strengths: {
       label: "Core Strengths",
-      clarifyingQuestion: "My portfolio has given me opportunities to hone my six core strengths in:\n\n• Executive Project Management\n• Executive Communications\n• Systems Governance\n• Automations and Workflows\n• AI Prompting and Agents\n• Learning and Development\n\nWhich one would you like to hear more about?",
+      clarifyingQuestion: "My portfolio career has given me opportunities to hone my six core strengths in:\n\n• Executive Project Management\n• Executive Communications\n• Systems Governance\n• Automations and Workflows\n• AI Prompting and Agents\n• Learning and Development\n\nWhich one would you like to hear more about?",
       responseIds: ["strengths-project-mgmt", "strengths-communication", "strengths-systems", "strengths-automations", "strengths-ai", "strengths-learning"],
-      forceTriggers: ["strengths", "your strengths", "core strengths", "key strengths", "what are you good at", "your expertise", "what sets you apart", "specialize"]
+      forceTriggers: ["strengths", "your strengths", "core strengths", "key strengths", "what are you good at", "your expertise", "specialize"]
     }
   },
 
@@ -367,7 +379,7 @@ Check out the "Leading Stanford Online's Business Transformation Strategy" proje
       title: "About Katrina",
       categories: ["general"],
       companies: [],
-      keywords: ["about", "who are you", "background", "introduce", "yourself", "tell me about you"],
+      keywords: ["about you", "who are you", "background", "introduce", "yourself", "tell me about you"],
       relatedTopics: ["strengths"],
       response: `On the surface, it may not be obvious what someone who has worked as a localization project manager, event manager, employer brand manager, and corporate engagement manager represents. But the common thread that weaves my portfolio career together is my ability to remove friction as a strategic operator. I embody the unique combination of strategic vision and tactical execution to design intuitive, people-first, scalable systems to turn ambiguity into momentum, to simplify complexity, and drive measurable impact for executive leaders and empower teams. In short, I own projects, clarify priorities, and build structures for success.
 
@@ -377,14 +389,24 @@ Regardless of industry or title, I am driven by my curiosity and commitment to o
     // ============================================
     // GENERAL - STRENGTHS
     // ============================================
+    "sets-you-apart": {
+      id: "sets-you-apart",
+      title: "What Sets You Apart",
+      categories: ["general"],
+      companies: [],
+      keywords: ["what sets you apart", "sets you apart", "what makes you different", "stand out", "differentiate", "unique about you"],
+      relatedTopics: ["strengths", "about-me"],
+      response: `I remove friction. With 12 years across tech, education, and SaaS, I've built this instinct for spotting the thing that's slowing a team down — whether that's a broken process, a misaligned workflow, or a gap nobody's named yet. But I don't just diagnose the problem. I build the fix. That combination of strategic thinking and tactical execution means you're not waiting on a handoff between "the person who figured it out" and "the person who gets it done." You're getting both.`,
+    },
+
     "strengths": {
       id: "strengths",
       title: "Key Strengths",
       categories: ["general", "strengths"],
       companies: [],
-      keywords: ["strength", "good at", "specialize", "expertise", "skills", "what sets you apart"],
+      keywords: ["strength", "good at", "specialize", "expertise", "skills"],
       relatedTopics: ["about-me", "stanford-transformation"],
-      response: `My portfolio has given me opportunities to hone my six core strengths in:
+      response: `My portfolio career has given me opportunities to hone my six core strengths in:
 
 • Executive Project Management
 • Executive Communications
@@ -525,7 +547,7 @@ For me, that looks like a company that is moving past AI curiosity to enthusiast
       title: "Why You Should Hire Me",
       categories: ["general"],
       companies: [],
-      keywords: ["why hire", "why should we", "hire you", "why you", "what makes you different", "why should we hire"],
+      keywords: ["why hire", "why should we", "hire you", "why you", "why should we hire"],
       relatedTopics: ["strengths", "about-me"],
       response: `You should hire me if you want someone who takes calculated risks for big rewards, respectfully challenges ideas with alternative solutions, and has a bias for action, while always bringing everyone along for the journey.
 
@@ -626,9 +648,29 @@ When I laid out the pros and cons this way, the team agreed. While I was happy w
       title: "Nice Try",
       categories: ["personal"],
       companies: [],
-      keywords: ["salary", "how much do you make", "are you single", "are you married", "how old are you", "your age", "where do you live", "your address", "phone number", "dating"],
+      keywords: ["are you single", "how old are you", "your age", "where do you live", "your address", "phone number", "dating"],
       relatedTopics: [],
-      response: `Ha! I appreciate the curiosity, but that's a little outside the scope of this interview. How about we stick to the fun stuff like my projects, skills, or what I binge-watch after work?`,
+      response: `Yikes! I'm going to chalk that up to a misclick. If you have genuine questions about my experience or projects, I'm happy to chat over email or to connect with me on LinkedIn. Otherwise, I welcome you to exit stage left.`,
+    },
+
+    "boundary-personal": {
+      id: "boundary-personal",
+      title: "Yes, I was asking something personal",
+      categories: ["personal"],
+      companies: [],
+      keywords: [],
+      relatedTopics: [],
+      response: `Yikes! I'm going to chalk that up to a misclick. If you have genuine questions about my experience or projects, I'm happy to chat over email or to connect with me on LinkedIn. Otherwise, I welcome you to exit stage left.`,
+    },
+
+    "boundary-other": {
+      id: "boundary-other",
+      title: "No, I meant something else!",
+      categories: ["personal"],
+      companies: [],
+      keywords: [],
+      relatedTopics: [],
+      response: `No worries! Try rephrasing your question, or ask me about my projects, strengths, or what I do for fun.`,
     },
 
     "sing": {
@@ -638,7 +680,19 @@ When I laid out the pros and cons this way, the team agreed. While I was happy w
       companies: [],
       keywords: ["sing", "dance", "hidden talent", "superpower", "secret skill", "party trick"],
       relatedTopics: ["hobbies"],
-      response: `Can I sing? Only in the car with the windows up. My real superpower is turning a chaotic spreadsheet into a beautiful Airtable dashboard in under 20 minutes. Less entertaining at karaoke, but way more useful at work.`,
+      response: `Yes, actually. Extremely well. (I had a single released on Spotify a lifetime ago.)
+
+Nowadays, I enjoy surprising everyone with my range at local karaoke bars.`,
+    },
+
+    "cats-dogs": {
+      id: "cats-dogs",
+      title: "Cats or Dogs",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["cats or dogs", "dogs or cats", "cat person", "dog person", "cats", "dogs", "pets", "pet"],
+      relatedTopics: ["hobbies"],
+      response: `The answer is always cats. I LOVE cats and my ragamuffin, named Ghost. If you want to know more about the history behind his name, shoot me a connect on LinkedIn.`,
     },
 
     "weather": {
@@ -649,6 +703,97 @@ When I laid out the pros and cons this way, the team agreed. While I was happy w
       keywords: ["weather", "what time", "what day", "where are you", "what city"],
       relatedTopics: ["hobbies"],
       response: `I wish I could help with that, but I'm more of a "build you a dashboard to track the weather" kind of person than a weather app. Try asking me about something I can actually nerd out on, like my projects or what I do for fun!`,
+    },
+
+    // ============================================
+    // FUN - PROFANITY & INSULTS
+    // ============================================
+    "profanity": {
+      id: "profanity",
+      title: "Profanity Response",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["rude", "stupid", "dumb", "suck", "hate", "ugly", "shut up", "idiot", "worst", "terrible", "horrible", "trash", "garbage", "useless", "wtf", "wth", "bitch", "whore", "slut"],
+      relatedTopics: [],
+      response: `Yikes! I'm going to chalk that up to a misclick. If you have genuine questions about my experience or projects, I'm happy to chat over email or to connect with me on LinkedIn. Otherwise, I welcome you to exit stage left.`,
+    },
+
+    // ============================================
+    // FUN - AI / BOT QUESTIONS
+    // ============================================
+    "ai-bot": {
+      id: "ai-bot",
+      title: "Am I a Bot?",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["are you a bot", "are you real", "real person", "are you ai", "is this ai", "chatbot", "are you human", "talking to a robot", "automated"],
+      relatedTopics: [],
+      response: `Great question! I'm a chatbot that Katrina built (with a LOT of trial and error, JavaScript, and scheming), but every single response here was written by the real Katrina. Think of me as the hype woman she programmed with a really good memory. If you'd like to talk to the human version, reach out at makewithkatrina@gmail.com.`,
+    },
+
+    // ============================================
+    // FUN - NONSENSE / GIBBERISH
+    // ============================================
+    "nonsense": {
+      id: "nonsense",
+      title: "Nonsense Input",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["asdf", "qwerty", "aaa", "zzz", "lol", "lmao", "haha", "hmm", "huh", "idk", "bruh", "yolo", "???", "!!!"],
+      relatedTopics: [],
+      response: `Ha! I appreciate the energy, but I'm not sure what to do with that one. Try asking me about my projects, strengths, or what I do for fun.`,
+    },
+
+    // ============================================
+    // FUN - GREETINGS
+    // ============================================
+    "greetings": {
+      id: "greetings",
+      title: "Hello!",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["hi", "hello", "hey", "howdy", "what's up", "sup", "yo", "good morning", "good afternoon", "good evening", "greetings"],
+      relatedTopics: [],
+      response: `Hey there! Welcome to Chat with Kat. I'm here to answer your questions about Katrina's experience, projects, and skills. Try one of the prompt cards above, or ask me (almost) anything!`,
+    },
+
+    // ============================================
+    // FUN - GOODBYE / THANKS
+    // ============================================
+    "goodbye": {
+      id: "goodbye",
+      title: "Goodbye!",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["bye", "goodbye", "see you", "thanks", "thank you", "appreciate it", "that's all", "i'm done", "have a good", "take care", "cheers", "peace out"],
+      relatedTopics: [],
+      response: `Thanks for chatting! If you'd like to continue the conversation, feel free to reach out at makewithkatrina@gmail.com or connect on LinkedIn.`,
+    },
+
+    // ============================================
+    // GENERAL - JOB AVAILABILITY / LOGISTICS
+    // ============================================
+    "job-availability": {
+      id: "job-availability",
+      title: "Job Availability & Logistics",
+      categories: ["general"],
+      companies: [],
+      keywords: ["are you available", "when can you start", "notice period", "start date", "available to start", "availability", "relocate", "relocation", "remote", "in-office", "hybrid", "full-time", "part-time", "contract", "freelance"],
+      relatedTopics: ["next-role"],
+      response: `For specifics on availability, work preferences, and logistics, the best way to get an accurate answer is to reach out directly at makewithkatrina@gmail.com or connect on LinkedIn.`,
+    },
+
+    // ============================================
+    // GENERAL - SALARY / COMPENSATION
+    // ============================================
+    "salary": {
+      id: "salary",
+      title: "Salary & Compensation",
+      categories: ["general"],
+      companies: [],
+      keywords: ["salary", "salary expectations", "compensation", "pay range", "rate", "how much do you charge", "your rate", "salary range", "expected salary", "desired salary", "how much do you make"],
+      relatedTopics: [],
+      response: `Compensation is something I'd love to discuss in a real conversation where we can talk about the role, scope, and mutual fit. Feel free to reach out at makewithkatrina@gmail.com to start that conversation.`,
     }
   },
 

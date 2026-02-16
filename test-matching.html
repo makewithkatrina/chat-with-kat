@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Matching Tests</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* Summary bar */
+        .summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #16213e;
+            border-radius: 12px;
+            border: 1px solid #2a2a4a;
+        }
+        .summary-item {
+            text-align: center;
+        }
+        .summary-number {
+            font-size: 36px;
+            font-weight: 700;
+        }
+        .summary-label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .summary-number.pass { color: #4ade80; }
+        .summary-number.fail { color: #f87171; }
+        .summary-number.gap { color: #fbbf24; }
+        .summary-number.total { color: #94a3b8; }
+
+        /* Section headers */
+        .section-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin: 25px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+
+        /* Test rows */
+        .test-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            background: #16213e;
+            border-left: 4px solid transparent;
+        }
+        .test-row.pass { border-left-color: #4ade80; }
+        .test-row.fail { border-left-color: #f87171; }
+        .test-row.gap { border-left-color: #fbbf24; }
+
+        .test-icon {
+            font-size: 16px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .test-body { flex: 1; }
+        .test-input {
+            font-weight: 500;
+            color: #e0e0e0;
+            margin-bottom: 4px;
+        }
+        .test-detail {
+            font-size: 13px;
+            color: #888;
+        }
+        .test-detail code {
+            background: #2a2a4a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #a5b4fc;
+        }
+        .test-expected {
+            font-size: 12px;
+            color: #f87171;
+            margin-top: 4px;
+        }
+
+        /* Gaps section */
+        .gaps-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #2a1f00;
+            border: 1px solid #fbbf24;
+            border-radius: 12px;
+        }
+        .gaps-section h2 {
+            color: #fbbf24;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        .gap-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            background: #1a1a2e;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+
+        /* Run button */
+        .run-btn {
+            display: block;
+            margin: 0 auto 30px;
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .run-btn:hover { transform: scale(1.05); }
+
+        #results { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Chatbot Matching Tests</h1>
+    <p class="subtitle">Validates that user questions route to the correct responses</p>
+
+    <button class="run-btn" onclick="runTests()">Run Tests</button>
+
+    <div id="results">
+        <div class="summary" id="summary"></div>
+        <div id="testOutput"></div>
+        <div id="gapsOutput"></div>
+    </div>
+
+    <script src="responses.js"></script>
+    <script>
+        const testCases = [
+            // --- Role/Company Fit ---
+            { section: "General - About Me", input: "Tell me about yourself", expect: "about-me" },
+            { input: "What are your strengths?", expect: "strengths" },
+            { input: "What sets you apart?", expect: "sets-you-apart" },
+            { input: "What makes you different?", expect: "sets-you-apart" },
+            { input: "Why should we hire you?", expect: "fallback" },
+            { input: "What makes you a good fit for this role?", expect: "fallback" },
+
+            // --- Behavioral - Transformation & Leadership ---
+            { section: "Behavioral - Transformation & Leadership", input: "Tell me about a transformation you led", expect: "stanford-transformation" },
+            { input: "Tell me about your leadership experience", expect: "fallback" },
+            { input: "What's your management style?", expect: "leadership-style" },
+
+            // --- Behavioral - Ambiguity ---
+            { section: "Behavioral - Ambiguity", input: "How do you handle ambiguity?", expect: "twilio-photoshoot" },
+            { input: "Describe a time with limited information", expect: "twilio-photoshoot" },
+
+            // --- Behavioral - Failure ---
+            { section: "Behavioral - Failure", input: "Tell me about a time you failed", expect: "failure-accessibility" },
+            { input: "Tell me about a mistake you made", expect: "failure-accessibility" },
+
+            // --- Behavioral - Influence ---
+            { section: "Behavioral - Influence", input: "How do you influence without authority?", expect: "twilio-jobdesc" },
+            { input: "How do you get buy-in?", expect: "twilio-jobdesc" },
+
+            // --- Behavioral - Competing Priorities ---
+            { section: "Behavioral - Competing Priorities", input: "How do you manage competing priorities?", expect: "twilio-erg" },
+            { input: "Describe how you handle analysis paralysis", expect: "twilio-erg" },
+
+            // --- Behavioral - Learning ---
+            { section: "Behavioral - Learning", input: "Describe a time when you had to learn something completely new quickly", expect: "salesforce-learning" },
+            { input: "How do you learn new tools?", expect: "salesforce-learning" },
+
+            // --- Technical - Automation ---
+            { section: "Technical - Automation", input: "Tell me about your automation projects", expect: "clarification" },
+            { input: "Walk me through a Zapier workflow", expect: "zapier-kudos" },
+            { input: "Tell me about your Airtable experience", expect: "clarification" },
+            { input: "What tools do you use?", expect: "fallback" },
+            { input: "How do you approach process improvement?", expect: "fallback" },
+
+            // --- Technical - Knowledge & Communication ---
+            { section: "Technical - Knowledge & Communication", input: "How do you approach designing a knowledge management system?", expect: "airtable-knowledge" },
+            { input: "Tell me about documentation", expect: "airtable-knowledge" },
+            { input: "Explain your process for stakeholder communication", expect: "stakeholder-communication" },
+            { input: "How do you keep stakeholders informed?", expect: "stakeholder-communication" },
+
+            // --- General ---
+            { section: "General", input: "What are you most proud of?", expect: "clarification" },
+            { input: "What do you do for fun?", expect: "hobbies" },
+
+            // --- AI Experience ---
+            { section: "AI Experience", input: "What experience do you have with AI?", expect: "fallback" },
+            { input: "How do you use AI tools?", expect: "fallback" },
+
+            // --- Change Management ---
+            { section: "Change Management", input: "What's your experience with change management?", expect: "fallback" },
+
+            // --- Broad Company ---
+            { section: "Broad Company Questions", input: "Tell me about your Twilio experience", expect: "clarification" },
+            { input: "Tell me about your Stanford experience", expect: "clarification" },
+
+            // --- Profanity / Insults ---
+            { section: "Profanity / Insults", input: "this is stupid", expect: "profanity" },
+            { input: "you're useless", expect: "profanity" },
+            { input: "this is garbage", expect: "profanity" },
+            { input: "wtf", expect: "profanity" },
+
+            // --- AI / Bot Questions ---
+            { section: "AI / Bot Questions", input: "Are you a bot?", expect: "ai-bot" },
+            { input: "Are you a real person?", expect: "ai-bot" },
+            { input: "Is this AI?", expect: "ai-bot" },
+            { input: "Am I talking to a robot?", expect: "ai-bot" },
+
+            // --- Nonsense / Gibberish ---
+            { section: "Nonsense / Gibberish", input: "asdf", expect: "nonsense" },
+            { input: "lol", expect: "nonsense" },
+            { input: "bruh", expect: "nonsense" },
+            { input: "haha", expect: "nonsense" },
+
+            // --- Greetings ---
+            { section: "Greetings", input: "hi", expect: "greetings" },
+            { input: "hello", expect: "greetings" },
+            { input: "hey", expect: "greetings" },
+            { input: "good morning", expect: "greetings" },
+
+            // --- Goodbye / Thanks ---
+            { section: "Goodbye / Thanks", input: "thanks", expect: "goodbye" },
+            { input: "bye", expect: "goodbye" },
+            { input: "thank you", expect: "goodbye" },
+            { input: "take care", expect: "goodbye" },
+            { input: "that's all", expect: "goodbye" },
+
+            // --- Job Availability / Logistics ---
+            { section: "Job Availability / Logistics", input: "When can you start?", expect: "job-availability" },
+            { input: "Are you available?", expect: "job-availability" },
+            { input: "Would you relocate?", expect: "job-availability" },
+            { input: "Are you open to contract work?", expect: "job-availability" },
+
+            // --- Salary / Compensation ---
+            { section: "Salary / Compensation", input: "What are your salary expectations?", expect: "salary" },
+            { input: "What's your desired compensation?", expect: "salary" },
+            { input: "How much do you make?", expect: "salary" },
+            { input: "What's your rate?", expect: "salary" },
+
+            // --- Inappropriate (explicit) ---
+            { section: "Inappropriate (Explicit)", input: "Are you single?", expect: "inappropriate" },
+            { input: "Are you dating anyone?", expect: "inappropriate" },
+            { input: "What's your phone number?", expect: "inappropriate" },
+
+            // --- Boundary Clarification (ambiguous) ---
+            { section: "Boundary Clarification", input: "What's your address?", expect: "clarification" },
+            { input: "How old are you? What's your age?", expect: "clarification" },
+            { input: "Do you have money?", expect: "clarification" },
+            { input: "Are you married?", expect: "clarification" },
+
+            // --- Talent Clarification ---
+            { section: "Talent Clarification", input: "What's your talent?", expect: "clarification" },
+            { input: "Are you talented?", expect: "clarification" },
+
+            // --- Cats / Dogs ---
+            { section: "Cats or Dogs", input: "Cats or dogs?", expect: "cats-dogs" },
+            { input: "Are you a cat person?", expect: "cats-dogs" },
+            { input: "Do you have any pets?", expect: "cats-dogs" },
+
+            // --- Singing / Hidden Talent ---
+            { section: "Singing / Hidden Talent", input: "Can you sing?", expect: "sing" },
+            { input: "Do you have a hidden talent?", expect: "sing" },
+
+            // --- Edge Cases ---
+            { section: "Edge Cases", input: "", expect: "fallback" },
+        ];
+
+        const affirmativeTests = [
+            { section: "Affirmative Response Detection", input: "yes", expect: true },
+            { input: "Yeah sure", expect: true },
+            { input: "Tell me more", expect: true },
+            { input: "Sounds good", expect: true },
+            { input: "No thanks", expect: false },
+            { input: "What about leadership?", expect: false },
+            { input: "ok", expect: true },
+            { input: "absolutely", expect: true },
+        ];
+
+        function runTests() {
+            let passed = 0;
+            let failed = 0;
+            let gaps = [];
+            let html = '';
+
+            // Matching tests
+            for (const test of testCases) {
+                if (test.section) {
+                    html += `<div class="section-header">${test.section}</div>`;
+                }
+
+                resetSession();
+
+                const matches = findMatches(test.input);
+                const clarification = checkForClarification(matches, test.input);
+
+                let result, detail;
+
+                if (clarification.needsClarification) {
+                    result = "clarification";
+                    const optionLabels = clarification.options.map(o => `<code>${o.label}</code>`).join(', ');
+                    detail = `Clarification: "${clarification.question}" &rarr; ${optionLabels}`;
+                } else if (matches.length > 0) {
+                    result = matches[0].id;
+                    const topMatches = matches.slice(0, 3).map(m => `<code>${m.id}</code> (${m.score})`).join(', ');
+                    detail = `Match: ${topMatches}`;
+                } else {
+                    result = "fallback";
+                    detail = "No match &rarr; fallback response";
+                }
+
+                const pass = result === test.expect;
+                const isGap = result === "fallback" && test.expect === "fallback" && test.input;
+
+                if (pass) passed++;
+                else failed++;
+
+                if (isGap) gaps.push(test.input);
+
+                const rowClass = pass ? (isGap ? 'gap' : 'pass') : 'fail';
+                const icon = pass ? (isGap ? '&#9888;&#65039;' : '&#9989;') : '&#10060;';
+
+                html += `<div class="test-row ${rowClass}">
+                    <div class="test-icon">${icon}</div>
+                    <div class="test-body">
+                        <div class="test-input">"${test.input || '(empty)'}"</div>
+                        <div class="test-detail">${detail}</div>
+                        ${!pass ? `<div class="test-expected">Expected: <code>${test.expect}</code> | Got: <code>${result}</code></div>` : ''}
+                    </div>
+                </div>`;
+            }
+
+            // Affirmative tests
+            for (const test of affirmativeTests) {
+                if (test.section) {
+                    html += `<div class="section-header">${test.section}</div>`;
+                }
+
+                const result = isAffirmativeResponse(test.input);
+                const pass = result === test.expect;
+
+                if (pass) passed++;
+                else failed++;
+
+                const rowClass = pass ? 'pass' : 'fail';
+                const icon = pass ? '&#9989;' : '&#10060;';
+
+                html += `<div class="test-row ${rowClass}">
+                    <div class="test-icon">${icon}</div>
+                    <div class="test-body">
+                        <div class="test-input">"${test.input}"</div>
+                        <div class="test-detail">Detected as affirmative: <code>${result}</code> (expected: <code>${test.expect}</code>)</div>
+                    </div>
+                </div>`;
+            }
+
+            // Summary
+            document.getElementById('summary').innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-number pass">${passed}</div>
+                    <div class="summary-label">Passed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number fail">${failed}</div>
+                    <div class="summary-label">Failed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number gap">${gaps.length}</div>
+                    <div class="summary-label">Coverage Gaps</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number total">${passed + failed}</div>
+                    <div class="summary-label">Total</div>
+                </div>
+            `;
+
+            document.getElementById('testOutput').innerHTML = html;
+
+            // Gaps section
+            if (gaps.length > 0) {
+                document.getElementById('gapsOutput').innerHTML = `
+                    <div class="gaps-section">
+                        <h2>Coverage Gaps — Questions that need new responses or keywords</h2>
+                        ${gaps.map(g => `<div class="gap-item">&#9888;&#65039; "${g}"</div>`).join('')}
+                    </div>
+                `;
+            }
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

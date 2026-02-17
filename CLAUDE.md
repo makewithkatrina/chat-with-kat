@@ -18,8 +18,13 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 - Chat interface with my photo as avatar
 - 8 prompt card buttons for common interview questions (horizontal scroll on mobile, 4-column grid on desktop)
 - Typing indicator animation for realistic feel
-- Category-based clarifying questions with choice buttons (strengths, technical, problemSolving, proud, etc.)
-- Personality responses for off-topic/fun queries (jokes, compliments, inappropriate questions, etc.)
+- Category-based clarifying questions with choice buttons (strengths, technical, problemSolving, proud, talent, boundary, etc.)
+- Personality responses for off-topic/fun queries (jokes, compliments, greetings, goodbye, cats/dogs, singing, etc.)
+- Boundary handling for inappropriate/personal questions with clarifying flow for ambiguous triggers
+- Profanity/insult detection with firm but professional redirect
+- AI/bot detection ("are you real?", "is this AI?") with transparent explanation
+- Nonsense/gibberish input handling
+- Job availability/logistics and salary/compensation redirects to email
 - Collapsible history sidebar tracking questions asked (session-only, clears on page leave)
 - Clickable history items that scroll to the relevant chat message
 - "KAT CHAT" watermark in chat area that dynamically grows with content
@@ -37,6 +42,7 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 
 - **index.html** - Main interface, all UI logic, sidebar, and styles
 - **responses.js** - Response content, categories, matching logic, and helper functions
+- **test-matching.html** - Test suite that validates keyword matching, clarification flows, and affirmative detection
 
 ### Response Matching Flow
 1. User input → `processUserMessage()`
@@ -74,8 +80,11 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 
 ### Important Matching Notes
 - Keywords must be **contiguous substrings** of the user's query (`lowerQuery.includes(keyword)`)
-- Force triggers should be **multi-word phrases** to avoid false positives (e.g., "tech stack" not "tools")
+- Force triggers should be **multi-word phrases** to avoid false positives (e.g., "tech stack" not "tools"), except for the `boundary` and `talent` categories which intentionally use short triggers with clarifying questions to prevent false blocks
 - The `strengths` category shows 6 sub-responses with its own clarifying question flow
+- The `boundary` category catches ambiguous personal keywords (age, address, home, money, married) and asks a clarifying question before deciding whether to block or redirect
+- The `talent` category disambiguates between professional strengths and hidden talents
+- Avoid overly generic keywords (e.g., use "about you" instead of "about") to prevent false matches across responses
 - `followUp` and `followUpResponseId` were removed from most responses to reduce UX clutter
 - `followUpOptions` still works on specific responses (e.g., strengths-automations)
 
@@ -97,3 +106,5 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 3. Add to appropriate category's `responseIds` if clarification grouping needed
 4. Link via `relatedTopics` or `followUpOptions` for conversation flow
 5. For personality/fun responses, add keywords that catch common off-topic queries
+6. For boundary/sensitive topics, use the `boundary` category pattern: short forceTriggers + clarifying question + two options (personal → block, something else → redirect)
+7. After adding new responses, update test-matching.html with test cases and run to verify

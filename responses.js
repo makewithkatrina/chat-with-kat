@@ -648,9 +648,9 @@ When I laid out the pros and cons this way, the team agreed. While I was happy w
       title: "Nice Try",
       categories: ["personal"],
       companies: [],
-      keywords: ["are you single", "how old are you", "your age", "where do you live", "your address", "phone number", "dating"],
+      keywords: ["are you single", "how old are you", "your age", "where do you live", "your address", "phone number", "dating", "sexy", "hot", "attractive", "sleep with", "hook up", "send pics", "send photos", "what do you look like", "turn on"],
       relatedTopics: [],
-      response: `Yikes! I'm going to chalk that up to a misclick. If you have genuine questions about my experience or projects, I'm happy to chat over email or to connect with me on LinkedIn. Otherwise, I welcome you to exit stage left.`,
+      response: `That's not something I'll engage with. My bot is for genuine questions about my experience or work. Please take your inappropriate ask elsewhere.`,
     },
 
     "boundary-personal": {
@@ -713,9 +713,22 @@ Nowadays, I enjoy surprising everyone with my range at local karaoke bars.`,
       title: "Profanity Response",
       categories: ["personal"],
       companies: [],
-      keywords: ["rude", "stupid", "dumb", "suck", "hate", "ugly", "shut up", "idiot", "worst", "terrible", "horrible", "trash", "garbage", "useless", "wtf", "wth", "bitch", "whore", "slut"],
+      keywords: ["rude", "stupid", "dumb", "suck", "hate", "ugly", "shut up", "idiot", "worst", "terrible", "horrible", "trash", "garbage", "useless", "wtf", "wth", "bitch", "whore", "slut", "fuck", "shit", "bullshit", "ass", "damn", "crap", "bastard", "jackass", "loser", "pathetic", "worthless", "moron", "jerk", "creep"],
       relatedTopics: [],
       response: `Yikes! I'm going to chalk that up to a misclick. If you have genuine questions about my experience or projects, I'm happy to chat over email or to connect with me on LinkedIn. Otherwise, I welcome you to exit stage left.`,
+    },
+
+    // ============================================
+    // FUN - THREATS
+    // ============================================
+    "threats": {
+      id: "threats",
+      title: "Threats Response",
+      categories: ["personal"],
+      companies: [],
+      keywords: ["kill", "hurt you", "die", "destroy you", "threat", "i will find you"],
+      relatedTopics: [],
+      response: `That's not something I'll engage with. My bot is for genuine questions about my experience or work. Please take your inappropriate ask elsewhere.`,
     },
 
     // ============================================

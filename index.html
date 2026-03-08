@@ -36,11 +36,35 @@
             box-shadow: 0 0 60px rgba(0,0,0,0.15);
         }
 
+        /* Top nav bar */
+        .top-nav {
+            background: #F1F2DE;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 24px;
+            padding: 8px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            flex-shrink: 0;
+        }
+        .top-nav a {
+            color: #233E32;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .top-nav a:hover {
+            color: #3A7A58;
+        }
+
         /* Header */
         .chat-header {
-            background: linear-gradient(135deg, #233E32 0%, #2C2821 100%);
+            background: #233E32;
             color: white;
-            padding: 24px 20px 20px;
+            padding: 20px 20px 20px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -545,6 +569,11 @@
     </div>
 
     <div class="app-wrapper">
+        <nav class="top-nav">
+            <a href="https://meet-katrina-h-qmrcr9t.gamma.site/" target="_blank">Portfolio</a>
+            <a href="https://drive.google.com/file/d/1JGmj7lk8DNxcVkGraRFSJhL7cDDhqy87/view?usp=drive_link" target="_blank">Resume</a>
+            <a href="https://www.linkedin.com/in/katrinahoner/" target="_blank">LinkedIn</a>
+        </nav>
         <div class="chat-header">
             <div class="header-title-row">
                 <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Open sidebar">
@@ -553,11 +582,6 @@
             </div>
             <h1><span id="typewriter-text"></span><span id="typewriter-cursor">|</span></h1>
             <p>Ask me about my experience, projects, or what I do for fun!</p>
-            <div class="resume-download">
-                <a href="https://meet-katrina-h-qmrcr9t.gamma.site/" target="_blank" class="resume-btn">View Portfolio</a>
-                <a href="https://drive.google.com/file/d/1JGmj7lk8DNxcVkGraRFSJhL7cDDhqy87/view?usp=drive_link" target="_blank" class="resume-btn">Download Resume</a>
-                <a href="https://www.linkedin.com/in/katrinahoner/" target="_blank" class="resume-btn">Connect on LinkedIn</a>
-            </div>
         </div>
 
         <div class="prompt-section" id="promptSection">

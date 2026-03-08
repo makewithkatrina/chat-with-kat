@@ -35,8 +35,10 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 
 ## Design
 
+- **Header animation**: Typewriter effect on "Chat with Kat" title on page load (`runHeaderTypewriter()`, 70ms per character) with a blinking `|` cursor
 - **Fonts**: Alice (header title), Lora Regular (all other text) via Google Fonts
-- **Color scheme**: Dark green gradient header (#233E32 → #2C2821), lined paper background (#f5f1eb)
+- **Color scheme**: Solid dark green header (#233E32), lined paper background (#f5f1eb)
+- **Top nav bar**: Slim bar above header with Portfolio, Resume, LinkedIn links; background #F1F2DE (cream), link color #233E32, hover #3A7A58
 - **Prompt cards**: Alternating #C3EED6 (mint) and #F1F2DE (cream)
 - **Send button**: Dark green rounded square with upward arrow icon
 

@@ -21,7 +21,9 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 - Category-based clarifying questions with choice buttons (strengths, technical, problemSolving, proud, talent, boundary, etc.)
 - Personality responses for off-topic/fun queries (jokes, compliments, greetings, goodbye, cats/dogs, singing, etc.)
 - Boundary handling for inappropriate/personal questions with clarifying flow for ambiguous triggers
-- Profanity/insult detection with firm but professional redirect
+- Profanity/insult detection (`fuck`, `shit`, `bullshit`, `stupid`, `idiot`, `loser`, `moron`, etc.) with firm but professional redirect
+- Sexual content detection (`sexy`, `hook up`, `send pics`, etc.) with firm redirect
+- Threat detection (`kill`, `hurt you`, `destroy you`, etc.) with firm redirect
 - AI/bot detection ("are you real?", "is this AI?") with transparent explanation
 - Nonsense/gibberish input handling
 - Job availability/logistics and salary/compensation redirects to email

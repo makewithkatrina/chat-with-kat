@@ -50,6 +50,15 @@
             font-weight: 700;
             margin-bottom: 4px;
         }
+        #typewriter-cursor {
+            display: inline-block;
+            margin-left: 2px;
+            animation: blink 0.8s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            50.01%, 100% { opacity: 0; }
+        }
         .chat-header p {
             font-size: 13px;
             opacity: 0.8;
@@ -542,7 +551,7 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
             </div>
-            <h1>Chat with Kat</h1>
+            <h1><span id="typewriter-text"></span><span id="typewriter-cursor">|</span></h1>
             <p>Ask me about my experience, projects, or what I do for fun!</p>
             <div class="resume-download">
                 <a href="https://meet-katrina-h-qmrcr9t.gamma.site/" target="_blank" class="resume-btn">View Portfolio</a>
@@ -588,6 +597,29 @@ What would you like to know about me?</div>
 
     <script src="responses.js"></script>
     <script>
+        function runHeaderTypewriter(text, speed = 70) {
+            const textEl = document.getElementById('typewriter-text');
+            const cursorEl = document.getElementById('typewriter-cursor');
+
+            if (!textEl) return;
+
+            textEl.textContent = '';
+
+            let index = 0;
+
+            function typeNext() {
+                if (index <= text.length) {
+                    textEl.textContent = text.slice(0, index);
+                    index += 1;
+                    setTimeout(typeNext, speed);
+                } else if (cursorEl) {
+                    cursorEl.style.opacity = '1';
+                }
+            }
+
+            typeNext();
+        }
+
         // Sidebar functions
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -843,6 +875,7 @@ What would you like to know about me?</div>
         window.addEventListener('load', () => {
             resetSession();
             updateWatermark();
+            runHeaderTypewriter('Chat with Kat', 70);
         });
     </script>
 </body>

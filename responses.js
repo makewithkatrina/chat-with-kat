@@ -381,7 +381,7 @@ Check out the "Leading Stanford Online's Business Transformation Strategy" proje
       companies: [],
       keywords: ["about you", "who are you", "background", "introduce", "yourself", "tell me about you"],
       relatedTopics: ["strengths"],
-      response: `On the surface, it may not be obvious what someone who has worked as a localization project manager, event manager, employer brand manager, and corporate engagement manager represents. I'm a strategic systems thinker with 12 years of experience building lasting infrastructures for organizational transformation across tech, education, and SaaS sectors. I embody the unique combination of strategic vision and tactical execution to design intuitive, people-first, scalable systems to turn ambiguity into momentum, to simplify complexity, and drive measurable impact for executive leaders and empower teams. In short, I own projects, clarify priorities, and build structures for success.
+      response: `On the surface, it may not be obvious what someone who has worked as a localization project manager, event manager, employer brand manager, and corporate engagement manager represents. But the common thread that weaves my portfolio career together is my ability to remove friction as a strategic operator. I embody the unique combination of strategic vision and tactical execution to design intuitive, people-first, scalable systems to turn ambiguity into momentum, to simplify complexity, and drive measurable impact for executive leaders and empower teams. In short, I own projects, clarify priorities, and build structures for success.
 
 Regardless of industry or title, I am driven by my curiosity and commitment to operational excellence and how I can help organizations achieve it.`,
     },

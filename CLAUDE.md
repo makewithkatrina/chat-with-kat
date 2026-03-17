@@ -112,3 +112,17 @@ A personal chatbot that lets hiring managers "interview" me by asking questions 
 5. For personality/fun responses, add keywords that catch common off-topic queries
 6. For boundary/sensitive topics, use the `boundary` category pattern: short forceTriggers + clarifying question + two options (personal → block, something else → redirect)
 7. After adding new responses, update test-matching.html with test cases and run to verify
+
+## Potential Brainstorms
+
+### GMICloud API Fallback for Unhandled Inappropriate Questions
+**Idea:** Use a GMICloud LLM API call as a fallback *only* when a user sends an inappropriate/off-topic question that doesn't match any existing hardcoded response.
+
+**Open questions to resolve before moving forward:**
+1. Which GMICloud model to use and what the base API URL looks like
+2. Exactly which inputs should trigger the API call — questions with zero keyword matches, or only ones that slip past the profanity/threat/sexual content filters?
+3. What the LLM should do: generate a Kat-style professional deflection, decide whether to answer or block, or something else?
+4. Test approach: standalone HTML test file (similar to test-matching.html) or a quick fetch() in DevTools console?
+5. Whether to use a Cloudflare Worker as a proxy to keep the API key out of the browser
+
+**Status:** Paused — idea parked here to revisit when ready to decide next steps.
